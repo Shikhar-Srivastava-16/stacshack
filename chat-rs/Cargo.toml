@@ -1,0 +1,9 @@
+[package]
+name = "chat-rs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+futures-util = "0.3.32"
+tokio = "1.50.0"
+warp = "0.4.2"
