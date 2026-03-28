@@ -1,6 +1,6 @@
 *notes
-dataset/*
-dataset/
+datasets/*
+datasets/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
