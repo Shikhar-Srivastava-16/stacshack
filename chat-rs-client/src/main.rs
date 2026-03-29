@@ -2,13 +2,11 @@ use futures_util::{SinkExt, StreamExt};
 use nokhwa::{
     Camera,
     pixel_format::RgbFormat,
-    utils::{CameraIndex, RequestedFormat, RequestedFormatType, Resolution},
+    utils::{RequestedFormat, RequestedFormatType, Resolution},
 };
 
-use std::fs;
 use std::process::Command;
 use std::sync::Arc;
-use std::time::Instant;
 
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
@@ -86,9 +84,9 @@ pub fn process_frame(strname: String) -> String {
 
     let path = format!("./frames/frame_{}.png", strname);
     decoded.save(&path).unwrap();
-    println!("-> Saved {}", path);
+    // println!("-> Saved {}", path);
 
-    println!("recognition!");
+    // println!("recognition!");
 
     // let output = Command::new("ls")
     // let output = Command::new("./deps/predict ../../image.png meow ./deps/models")
@@ -101,7 +99,7 @@ pub fn process_frame(strname: String) -> String {
         .expect("Failed to execute command");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    // let stderr = String::from_utf8_lossy(&output.stderr);
 
     camera.stop_stream().ok();
     stdout.to_string()
@@ -121,14 +119,14 @@ pub fn find_working_camera() -> Camera {
 
         let mut camera = match Camera::new(cam_info.index().clone(), requested) {
             Ok(cam) => cam,
-            Err(e) => {
-                println!("Skipping camera {}: {}", cam_info.index(), e);
+            Err(_e) => {
+                // println!("Skipping camera {}: {}", cam_info.index(), e);
                 continue;
             }
         };
 
         if camera.open_stream().is_err() {
-            println!("Skipping camera {}: couldn't open stream", cam_info.index());
+            // println!("Skipping camera {}: couldn't open stream", cam_info.index());
             continue;
         }
 
@@ -140,15 +138,15 @@ pub fn find_working_camera() -> Camera {
                     return camera; // stream is already open
                 }
                 _ => {
-                    println!(
-                        "Skipping camera {}: empty or invalid frame",
-                        cam_info.index()
-                    );
+                    // println!(
+                    //     "Skipping camera {}: empty or invalid frame",
+                    //     cam_info.index()
+                    // );
                     camera.stop_stream().ok();
                 }
             },
-            Err(e) => {
-                println!("Skipping camera {}: {}", cam_info.index(), e);
+            Err(_e) => {
+                // println!("Skipping camera {}: {}", cam_info.index(), e);
                 camera.stop_stream().ok();
             }
         }
